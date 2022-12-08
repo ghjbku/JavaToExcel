@@ -1,49 +1,46 @@
 package org.windsake;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.windsake.DataManipulation.DataManipulation;
+import org.windsake.FieldTypes.Formula.FormulaField;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.util.ArrayList;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
+        String sheetName = "cucc.xlsx";
+        XSSFWorkbook workbook = null;
+        XSSFSheet sheet = null;
 
-        XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("Java Books");
+        Object[] returned = DataManipulation.initData(workbook, sheet, sheetName);
+        workbook = (XSSFWorkbook) returned[0];
+        sheet = (XSSFSheet) returned[1];
 
-        Object[][] bookData = {
-                {"Head First Java", "Kathy Serria", 79},
-                {"Effective Java", "Joshua Bloch", 36},
-                {"Clean Code", "Robert martin", 42},
-                {"Thinking in Java", "Bruce Eckel", 35},
+
+        assert sheet != null;
+
+
+        FormulaField formulaField = new FormulaField("Account", "cuccApi__c", "cucc",
+                "Formula(checkbox)", "testdesc", "testex",
+                "testcomm", 25, "No");
+        FormulaField formulaField2 = new FormulaField("Account", "cuccApi2__c", "cucc2",
+                "Formula(Text)", "testdesc2", "testex2",
+                "testcomm2", 25, "No");
+        FormulaField formulaField3 = new FormulaField("Account", "cuccApi23__c", "cucc32",
+                "Formula(Date)", "testdesc32", "teste3x2",
+                "testcomm3", 25, "Yes");
+
+        ArrayList<Object[]> bookData = new ArrayList<>() {
         };
-
-        int rowCount = 0;
-
-        for (Object[] aBook : bookData) {
-            Row row = sheet.createRow(++rowCount);
-
-            int columnCount = 0;
-
-            for (Object field : aBook) {
-                Cell cell = row.createCell(++columnCount);
-                if (field instanceof String) {
-                    cell.setCellValue((String) field);
-                } else if (field instanceof Integer) {
-                    cell.setCellValue((Integer) field);
-                }
-            }
-
-        }
+        bookData.add(formulaField.getFieldData());
+        bookData.add(formulaField2.getFieldData());
+        bookData.add(formulaField3.getFieldData());
 
 
-        try (FileOutputStream outputStream = new FileOutputStream("JavaBooks.xlsx")) {
-            workbook.write(outputStream);
-        }
+        DataManipulation.insertData(sheet, bookData);
+        DataManipulation.writeToFile(workbook, sheetName);
     }
 
 }
