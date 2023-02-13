@@ -23,7 +23,7 @@ public class Main {
 
         assert sheet != null;
 
-        ArrayList<Object[]> initDatas =InitializeData.initData(4,sheet);
+        ArrayList<Object[]> initDatas =InitializeData.initData(9,sheet);
 
 
         bookData.addAll(initDatas);

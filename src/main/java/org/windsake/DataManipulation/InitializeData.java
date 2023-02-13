@@ -28,7 +28,7 @@ public class InitializeData {
         int rowCount = sheet.getLastRowNum()+2;
         ArrayList<Object[]> plates = new ArrayList<>();
         for (int i =0;i<count;i++){
-            LicensePlate dummy = new LicensePlate("ABC-12"+i,"SUM(COUNTIF(A:A;A"+rowCount+"), -COUNTIF(A2;A"+rowCount+"))");
+            LicensePlate dummy = new LicensePlate("ABC-12"+i,"(COUNTIF(A:A,A"+rowCount+")-COUNTIF(A2,A"+rowCount+"))");
                     plates.add(dummy.getFieldData());
             rowCount++;
         }
