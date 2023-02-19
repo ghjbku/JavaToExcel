@@ -2,7 +2,7 @@ package org.windsake.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -20,22 +20,55 @@ public class BaseController {
     File excelFile;
 
     @FXML
-    ToolBar first_tab;
-    @FXML
     Pane version_pane;
+    @FXML
+    TextField sheetName;
+    @FXML
+    ChoiceBox<String> langSelector;
+
+    //Labels
+    @FXML
+    Label errorMsg;
+    @FXML
+    Label versionLabel;
+    @FXML
+    Label languageLabel;
+    @FXML
+    Label sheetNameLabel;
+
+    //buttons
+    @FXML
+    Button openFileButton;
+    @FXML
+    Button exitButton;
 
     @FXML
     void initialize() {
+        langSelector.getItems().addAll("HU","ENG");
+        langSelector.setValue("ENG");
+        langSelector.setOnAction((event) -> {
+                    System.out.println("   ChoiceBox.getValue(): " + langSelector.getValue());
+                    onCboxChoice(langSelector.getValue());
+                }
+        );
     }
 
     @FXML
     void open_folder() {
+        if (sheetName.getText().isEmpty()){
+            errorMsg.setVisible(true);
+            return;
+        }
+        errorMsg.setVisible(false);
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open xsave.dat");
+            if (langSelector.getValue().equals("HU")){
+                fileChooser.setTitle("Példa: cucc.xlsx");
+            }else{fileChooser.setTitle("Open cucc.xlsx");}
+
         try {
             excelFile = fileChooser.showOpenDialog(App.getstage());
             App.setFilePath(excelFile.getPath());
-            DataManipulation();
+            dataManipulation(sheetName.getText());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -84,13 +117,44 @@ public class BaseController {
         return thescene;
     }
 
-    private void DataManipulation(){
-        String sheetName = excelFile.getPath();
+    private void onCboxChoice(String lang){
+        switch (lang){
+            case "HU": setDataToHungarian();
+                break;
+            case "ENG": setDataToEnglish();
+                break;
+            default: break;
+        }
+    }
+
+    private void setDataToHungarian(){
+        sheetNameLabel.setText("Lap neve*");
+        languageLabel.setText("Nyelv választás");
+        errorMsg.setText("A lapnév megadása kötelező!");
+        String dummyVersion = versionLabel.getText();
+        versionLabel.setText(dummyVersion.replace("Version","Verzió szám"));
+
+        openFileButton.setText("excel fájl megnyitása");
+        exitButton.setText("Kilépés");
+    }
+    private void setDataToEnglish(){
+        sheetNameLabel.setText("Sheet Name*");
+        languageLabel.setText("Language");
+        errorMsg.setText("sheet name is missing!");
+        String dummyVersion = versionLabel.getText();
+        versionLabel.setText(dummyVersion.replace("Verzió szám","Version"));
+
+        openFileButton.setText("Open excel file");
+        exitButton.setText("Exit");
+    }
+
+    private void dataManipulation(String sheetNameText){
+        String excelPath = excelFile.getPath();
         XSSFWorkbook workbook = null;
         XSSFSheet sheet = null;
         ArrayList<Object[]> bookData = new ArrayList<>();
 
-        Object[] returned = DataManipulation.initData(workbook, sheet, sheetName);
+        Object[] returned = DataManipulation.initData(workbook, sheet, excelPath,sheetNameText);
         workbook = (XSSFWorkbook) returned[0];
         sheet = (XSSFSheet) returned[1];
 
@@ -100,6 +164,6 @@ public class BaseController {
 
         bookData.addAll(initDatas);
         DataManipulation.insertData(sheet, bookData);
-        DataManipulation.writeToFile(workbook, sheetName);
+        DataManipulation.writeToFile(workbook, excelPath);
     }
 }

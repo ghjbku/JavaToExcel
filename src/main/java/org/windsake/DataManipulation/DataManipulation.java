@@ -12,11 +12,11 @@ import java.util.ArrayList;
 
 public class DataManipulation {
 
-    public static Object[] initData(XSSFWorkbook workbook,XSSFSheet sheet, String sheetName){
+    public static Object[] initData(XSSFWorkbook workbook,XSSFSheet sheet, String excelName,String sheetName){
         try {
-            FileInputStream inputStream = new FileInputStream(sheetName);
+            FileInputStream inputStream = new FileInputStream(excelName);
             workbook = new XSSFWorkbook(inputStream);
-            sheet = workbook.getSheet("Sheet1");
+            sheet = workbook.getSheet(sheetName);
         }catch (Exception e){
             e.printStackTrace();
         }
