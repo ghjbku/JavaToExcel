@@ -12,19 +12,19 @@ import java.util.ArrayList;
 
 public class DataManipulation {
 
-    public static Object[] initData(XSSFWorkbook workbook,XSSFSheet sheet, String excelName,String sheetName){
+    public static Object[] initData(XSSFWorkbook workbook, XSSFSheet sheet, String excelName, String sheetName) {
         try {
             FileInputStream inputStream = new FileInputStream(excelName);
             workbook = new XSSFWorkbook(inputStream);
             sheet = workbook.getSheet(sheetName);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return new Object[]{workbook,sheet};
+        return new Object[]{workbook, sheet};
     }
 
     public static void insertData(XSSFSheet sheet, ArrayList<Object[]> bookData) {
-        int rowCount = sheet.getLastRowNum()+1;
+        int rowCount = sheet.getLastRowNum() + 1;
 
         for (Object[] aBook : bookData) {
             Row row = sheet.createRow(rowCount++);
@@ -34,9 +34,9 @@ public class DataManipulation {
             for (Object field : aBook) {
                 Cell cell = row.createCell(columnCount++);
                 if (field instanceof String) {
-                    if(columnCount > 1){
+                    if (columnCount > 1) {
                         cell.setCellFormula((String) field);
-                    }else{
+                    } else {
                         cell.setCellValue((String) field);
                     }
                 } else if (field instanceof Integer) {
@@ -47,8 +47,8 @@ public class DataManipulation {
         }
     }
 
-    public static void writeToFile(XSSFWorkbook workbook, String sheetName){
-        try{
+    public static void writeToFile(XSSFWorkbook workbook, String sheetName) {
+        try {
             FileOutputStream outputStream = new FileOutputStream(sheetName);
             workbook.write(outputStream);
             workbook.close();
