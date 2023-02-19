@@ -14,7 +14,7 @@ public class DataManipulation {
 
     public static Object[] initData(XSSFWorkbook workbook,XSSFSheet sheet, String sheetName){
         try {
-            FileInputStream inputStream = new FileInputStream("./"+sheetName);
+            FileInputStream inputStream = new FileInputStream(sheetName);
             workbook = new XSSFWorkbook(inputStream);
             sheet = workbook.getSheet("Sheet1");
         }catch (Exception e){
@@ -49,7 +49,7 @@ public class DataManipulation {
 
     public static void writeToFile(XSSFWorkbook workbook, String sheetName){
         try{
-            FileOutputStream outputStream = new FileOutputStream("./"+sheetName);
+            FileOutputStream outputStream = new FileOutputStream(sheetName);
             workbook.write(outputStream);
             workbook.close();
         } catch (Exception e) {

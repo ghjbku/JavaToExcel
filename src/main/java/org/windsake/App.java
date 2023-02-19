@@ -7,13 +7,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.windsake.DataManipulation.DataManipulation;
-import org.windsake.DataManipulation.InitializeData;
+import javafx.stage.StageStyle;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class App extends Application {
@@ -34,12 +30,12 @@ public class App extends Application {
         final int app_stage_height = 400;
 
         primarystage = primaryStage;
-
         Parent root = FXMLLoader.load(Objects.requireNonNull(this.getClass().getResource("base.fxml")));
         primarystage.setScene(new Scene(root, app_stage_width, app_stage_height));
         Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
         double x = (bounds.getMaxX() / 2) - 300;
         double y = (bounds.getMaxY() / 2) - 200;
+        primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.setX(x);
         primaryStage.setY(y);
         primaryStage.show();
@@ -57,22 +53,4 @@ public class App extends Application {
         filePath = path;
     }
 
-    private void DataManipulation(){
-        String sheetName = "cucc.xlsx";
-        XSSFWorkbook workbook = null;
-        XSSFSheet sheet = null;
-        ArrayList<Object[]> bookData = new ArrayList<>();
-
-        Object[] returned = DataManipulation.initData(workbook, sheet, sheetName);
-        workbook = (XSSFWorkbook) returned[0];
-        sheet = (XSSFSheet) returned[1];
-
-        assert sheet != null;
-
-        ArrayList<Object[]> initDatas =InitializeData.initData(9,sheet);
-
-        bookData.addAll(initDatas);
-        DataManipulation.insertData(sheet, bookData);
-        DataManipulation.writeToFile(workbook, sheetName);
-    }
 }

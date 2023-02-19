@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="401.0" prefWidth="613.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.windsake.controllers.BaseController">
+   <ToolBar fx:id="first_tab" layoutY="2.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="35.0" prefWidth="613.0">
+      <Label onMouseEntered="#on_hover_version_num" onMouseExited="#on_exit_version_num" text="Version: 1.0.0" />
+      <opaqueInsets>
+         <Insets />
+      </opaqueInsets>
+      <padding>
+         <Insets bottom="5.0" left="50.0" />
+      </padding>
+   </ToolBar>
+   <Button layoutX="569.0" layoutY="2.0" mnemonicParsing="false" onAction="#exit_button_processing" text="Exit" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0" />
+   <Label alignment="CENTER" layoutX="2.0" layoutY="49.0" prefHeight="35.0" prefWidth="613.0" text="something here" textAlignment="CENTER" textFill="#9a0909" textOverrun="WORD_ELLIPSIS" wrapText="true">
+      <font>
+         <Font name="Arial Rounded MT Bold" size="18.0" />
+      </font>
+   </Label>
+   <Pane fx:id="version_pane" layoutX="356.0" layoutY="37.0" opacity="0.93" prefHeight="132.0" prefWidth="200.0" style="-fx-background-color: gray;" visible="false">
+      <Label alignment="TOP_CENTER" layoutX="5.0" layoutY="6.0" prefHeight="121.0" prefWidth="189.0" style="-fx-background-color: black;" text="What's new:" textAlignment="CENTER" textFill="WHITE">
+         <font>
+            <Font size="23.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="42.0" prefHeight="78.0" prefWidth="180.0" text="base gui is added" textAlignment="CENTER" textFill="#f2e5bf" wrapText="true">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+   </Pane>
+   <Button layoutX="14.0" layoutY="54.0" mnemonicParsing="false" onAction="#open_folder" text="Open excel file" />
+</AnchorPane>
