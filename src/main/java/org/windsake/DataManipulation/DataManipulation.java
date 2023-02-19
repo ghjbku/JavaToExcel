@@ -12,15 +12,15 @@ import java.util.ArrayList;
 
 public class DataManipulation {
 
-    public static Object[] initData(XSSFWorkbook workbook, XSSFSheet sheet, String excelName, String sheetName) {
+    public static XSSFWorkbook initData( String excelName) {
+        XSSFWorkbook workbook=null;
         try {
             FileInputStream inputStream = new FileInputStream(excelName);
             workbook = new XSSFWorkbook(inputStream);
-            sheet = workbook.getSheet(sheetName);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new Object[]{workbook, sheet};
+        return workbook;
     }
 
     public static void insertData(XSSFSheet sheet, ArrayList<Object[]> bookData) {

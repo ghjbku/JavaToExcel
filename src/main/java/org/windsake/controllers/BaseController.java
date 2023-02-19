@@ -17,14 +17,18 @@ import java.util.ArrayList;
 
 public class BaseController {
     static Scene thescene;
+    String excelPath;
     File excelFile;
+    XSSFWorkbook workbook;
+    XSSFSheet sheet;
+    ArrayList<Object[]> bookData = new ArrayList<>();
 
     @FXML
     Pane version_pane;
     @FXML
-    TextField sheetName;
-    @FXML
     ChoiceBox<String> langSelector;
+    @FXML
+    ChoiceBox<String> sheetNamePicker;
 
     //Labels
     @FXML
@@ -41,6 +45,8 @@ public class BaseController {
     Button openFileButton;
     @FXML
     Button exitButton;
+    @FXML
+    Button runButton;
 
     @FXML
     void initialize() {
@@ -54,11 +60,6 @@ public class BaseController {
 
     @FXML
     void open_file() {
-        if (sheetName.getText().isEmpty()) {
-            errorMsg.setVisible(true);
-            return;
-        }
-        errorMsg.setVisible(false);
         FileChooser fileChooser = new FileChooser();
         if (langSelector.getValue().equals("HU")) {
             fileChooser.setTitle("Példa: cucc.xlsx");
@@ -69,10 +70,27 @@ public class BaseController {
         try {
             excelFile = fileChooser.showOpenDialog(App.getstage());
             App.setFilePath(excelFile.getPath());
-            dataManipulation(sheetName.getText());
+            dataManipulation();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    public void run(){
+        if (sheetNamePicker.getItems().isEmpty()) {
+            errorMsg.setVisible(true);
+            return;
+        }
+        errorMsg.setVisible(false);
+        assert sheet != null;
+
+        ArrayList<Object[]> initDatas = InitializeData.initData(9, sheet);
+
+        bookData.addAll(initDatas);
+        DataManipulation.insertData(sheet, bookData);
+        workbook.setForceFormulaRecalculation(true);
+        DataManipulation.writeToFile(workbook, excelPath);
     }
 
     @FXML
@@ -135,7 +153,8 @@ public class BaseController {
     private void setDataToHungarian() {
         sheetNameLabel.setText("Lap neve*");
         languageLabel.setText("Nyelv választás");
-        errorMsg.setText("A lapnév megadása kötelező!");
+        runButton.setText("Program futtatása");
+        errorMsg.setText("A lapnév hiányzik, nyiss meg egy excel fájlt!");
         String dummyVersion = versionLabel.getText();
         versionLabel.setText(dummyVersion.replace("Version", "Verzió szám"));
 
@@ -146,7 +165,8 @@ public class BaseController {
     private void setDataToEnglish() {
         sheetNameLabel.setText("Sheet Name*");
         languageLabel.setText("Language");
-        errorMsg.setText("sheet name is missing!");
+        runButton.setText("Run the program");
+        errorMsg.setText("sheet name is missing, open an excel file!");
         String dummyVersion = versionLabel.getText();
         versionLabel.setText(dummyVersion.replace("Verzió szám", "Version"));
 
@@ -154,25 +174,19 @@ public class BaseController {
         exitButton.setText("Exit");
     }
 
-    private void dataManipulation(String sheetNameText) {
-        String excelPath = excelFile.getPath();
-        XSSFWorkbook workbook = null;
-        XSSFSheet sheet = null;
-        ArrayList<Object[]> bookData = new ArrayList<>();
+    private void initSheetPicker(XSSFWorkbook workbook){
+        int numOfSheets=workbook.getNumberOfSheets();
+        for (int i=0;i<numOfSheets;i++){
+            sheetNamePicker.getItems().add(workbook.getSheetName(i));
+        }
+        sheetNamePicker.setValue(workbook.getSheetName(0));
+    }
 
-        Object[] returned = DataManipulation.initData(workbook, sheet, excelPath, sheetNameText);
-        workbook = (XSSFWorkbook) returned[0];
-        sheet = (XSSFSheet) returned[1];
+    private void dataManipulation() {
+        excelPath = excelFile.getPath();
+        workbook = DataManipulation.initData(excelPath);
+        initSheetPicker(workbook);
+        sheet = workbook.getSheet(sheetNamePicker.getValue());
 
-        System.out.println(workbook.getSheetName(0));
-
-        assert sheet != null;
-
-        ArrayList<Object[]> initDatas = InitializeData.initData(9, sheet);
-
-        bookData.addAll(initDatas);
-        DataManipulation.insertData(sheet, bookData);
-        workbook.setForceFormulaRecalculation(true);
-        DataManipulation.writeToFile(workbook, excelPath);
     }
 }
