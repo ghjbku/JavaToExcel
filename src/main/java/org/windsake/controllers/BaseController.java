@@ -5,11 +5,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.windsake.App;
 import org.windsake.DataManipulation.DataManipulation;
-import org.windsake.DataManipulation.InitializeData;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +24,7 @@ public class BaseController {
     File excelFile;
     XSSFWorkbook workbook;
     XSSFSheet sheet;
-    ArrayList<Object[]> bookData = new ArrayList<>();
+
 
     @FXML
     Pane versionPane;
@@ -36,7 +38,7 @@ public class BaseController {
     TextField plateField;
 
     @FXML
-    Label errorMsg2;
+    Label errorMsg;
     @FXML
     Label versionLabel;
     @FXML
@@ -47,6 +49,8 @@ public class BaseController {
     Label countLabel;
     @FXML
     Label plateNameLabel;
+    @FXML
+    Label countAmount;
 
 
     //buttons
@@ -56,6 +60,8 @@ public class BaseController {
     Button exitButton;
     @FXML
     Button runButton;
+    @FXML
+    Button insertPlateButton;
 
     @FXML
     void initialize() {
@@ -86,16 +92,15 @@ public class BaseController {
     }
 
     @FXML
-    public void run() {
+    public void insert_plate(){
+        ArrayList<Object[]> bookData = new ArrayList<>();
+
         if (plateField.getText().isEmpty()) {
-            errorMsg2.setVisible(true);
+            errorMsg.setVisible(true);
             return;
         }
-        errorMsg2.setVisible(false);
+        errorMsg.setVisible(false);
         assert sheet != null;
-
-        //ArrayList<Object[]> initDatas = InitializeData.initData(9, sheet);
-        //bookData.addAll(initDatas);
 
         Object[] createdPlate = DataManipulation.createPlate(plateField.getText(),sheet);
         bookData.add(createdPlate);
@@ -103,6 +108,25 @@ public class BaseController {
         DataManipulation.insertAllData(sheet, bookData);
         workbook.setForceFormulaRecalculation(true);
         DataManipulation.writeToFile(workbook, excelPath);
+    }
+
+    @FXML
+    public void run() {
+        if (plateField.getText().isEmpty()) {
+            errorMsg.setVisible(true);
+            return;
+        }
+        errorMsg.setVisible(false);
+        assert sheet != null;
+
+        int rowNum = DataManipulation.findRow(sheet,plateField.getText());
+        FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
+
+
+        XSSFCell formulaCell = (sheet.getRow(rowNum).getCell(sheet.getRow(rowNum).getLastCellNum()-1));
+        DataFormatter formatter = new DataFormatter();
+
+        countAmount.setText(formatter.formatCellValue(formulaCell, evaluator));
     }
 
     @FXML
@@ -168,8 +192,8 @@ public class BaseController {
     private void setDataToHungarian() {
         sheetNameLabel.setText("Lap neve*");
         languageLabel.setText("Nyelv választás");
-        runButton.setText("Program futtatása");
-        errorMsg2.setText("a rendszám mező üres!");
+        runButton.setText("Gyakoriság számlálás");
+        errorMsg.setText("a rendszám mező üres!");
         String dummyVersion = versionLabel.getText();
         versionLabel.setText(dummyVersion.replace("Version", "Verzió szám"));
         countLabel.setText((countLabel.getText()).replace("count", "gyakoriság"));
@@ -177,14 +201,15 @@ public class BaseController {
         plateField.setPromptText("A2-es cella");
 
         openFileButton.setText("excel fájl megnyitása");
+        insertPlateButton.setText("Rendszám beillesztés");
         exitButton.setText("Kilépés");
     }
 
     private void setDataToEnglish() {
         sheetNameLabel.setText("Sheet Name*");
         languageLabel.setText("Language");
-        runButton.setText("Run the program");
-        errorMsg2.setText("Plate Name is missing, nothing to insert!");
+        runButton.setText("Get Plate count");
+        errorMsg.setText("Plate Name is missing, nothing to insert!");
         String dummyVersion = versionLabel.getText();
         versionLabel.setText(dummyVersion.replace("Verzió szám", "Version"));
         countLabel.setText((countLabel.getText()).replace("gyakoriság", "count"));
@@ -193,6 +218,7 @@ public class BaseController {
 
 
         openFileButton.setText("Open excel file");
+        insertPlateButton.setText("Insert new Plate");
         exitButton.setText("Exit");
     }
 
