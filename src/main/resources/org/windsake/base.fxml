@@ -27,7 +27,7 @@
          <Label fx:id="countLabel" layoutX="169.0" layoutY="110.0" text="count:" />
          <Label fx:id="plateNameLabel" layoutY="88.0" text="Plate Name*" textFill="RED" />
          <TextField fx:id="plateField" layoutY="106.0" promptText="A2 Cell" />
-         <Button fx:id="runButton" mnemonicParsing="false" onAction="#run" text="Insert new Plate" />
+         <Button fx:id="runButton" mnemonicParsing="false" onAction="#run" text="Get Plate count" />
          <Label fx:id="countAmount" layoutX="250.0" layoutY="111.0" text="x" />
       </children>
    </Pane>
