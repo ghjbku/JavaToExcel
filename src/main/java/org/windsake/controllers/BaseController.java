@@ -51,6 +51,10 @@ public class BaseController {
     Label plateNameLabel;
     @FXML
     Label countAmount;
+    @FXML
+    Label latestLabel;
+    @FXML
+    Label newsTitleLabel;
 
 
     //buttons
@@ -194,6 +198,8 @@ public class BaseController {
         languageLabel.setText("Nyelv választás");
         runButton.setText("Gyakoriság számlálás");
         errorMsg.setText("a rendszám mező üres!");
+        newsTitleLabel.setText("Újdonság:");
+        latestLabel.setText("Alap GUI létrehozva és működik.");
         String dummyVersion = versionLabel.getText();
         versionLabel.setText(dummyVersion.replace("Version", "Verzió szám"));
         countLabel.setText((countLabel.getText()).replace("count", "gyakoriság"));
@@ -210,6 +216,8 @@ public class BaseController {
         languageLabel.setText("Language");
         runButton.setText("Get Plate count");
         errorMsg.setText("Plate Name is missing, nothing to insert!");
+        newsTitleLabel.setText("What's new:");
+        latestLabel.setText("Base GUI added and is working.");
         String dummyVersion = versionLabel.getText();
         versionLabel.setText(dummyVersion.replace("Verzió szám", "Version"));
         countLabel.setText((countLabel.getText()).replace("gyakoriság", "count"));

@@ -32,12 +32,12 @@
       </children>
    </Pane>
    <Pane fx:id="versionPane" layoutX="356.0" layoutY="37.0" opacity="0.93" prefHeight="132.0" prefWidth="200.0" style="-fx-background-color: gray;" visible="false">
-      <Label alignment="TOP_CENTER" layoutX="5.0" layoutY="6.0" prefHeight="121.0" prefWidth="189.0" style="-fx-background-color: black;" text="What's new:" textAlignment="CENTER" textFill="WHITE">
+      <Label fx:id="newsTitleLabel" alignment="TOP_CENTER" layoutX="5.0" layoutY="6.0" prefHeight="121.0" prefWidth="189.0" style="-fx-background-color: black;" text="What's new:" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font size="23.0" />
          </font>
       </Label>
-      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="42.0" prefHeight="78.0" prefWidth="180.0" text="base gui is added" textAlignment="CENTER" textFill="#f2e5bf" wrapText="true">
+      <Label fx:id="latestLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="42.0" prefHeight="78.0" prefWidth="180.0" text="Base GUI added and is working." textAlignment="CENTER" textFill="#f2e5bf" wrapText="true">
          <font>
             <Font size="15.0" />
          </font>
