@@ -1,10 +1,10 @@
 package org.windsake.DataManipulation;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.windsake.FieldTypes.LicensePlate;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class DataManipulation {
 
-    public static XSSFWorkbook initData( String excelName) {
+    public static XSSFWorkbook initWorkbook(String excelName) {
         XSSFWorkbook workbook=null;
         try {
             FileInputStream inputStream = new FileInputStream(excelName);
@@ -23,7 +23,12 @@ public class DataManipulation {
         return workbook;
     }
 
-    public static void insertData(XSSFSheet sheet, ArrayList<Object[]> bookData) {
+    public static Object[] createPlate(String plateNumber, XSSFSheet sheet){
+        int rowCount = sheet.getLastRowNum()+2;
+            return (new LicensePlate(plateNumber,"(COUNTIF(A:A,A"+rowCount+")-COUNTIF(A2,A"+rowCount+"))")).getFieldData();
+    }
+
+    public static void insertAllData(XSSFSheet sheet, ArrayList<Object[]> bookData) {
         int rowCount = sheet.getLastRowNum() + 1;
 
         for (Object[] aBook : bookData) {
@@ -51,7 +56,7 @@ public class DataManipulation {
         try {
             FileOutputStream outputStream = new FileOutputStream(sheetName);
             workbook.write(outputStream);
-            workbook.close();
+            //workbook.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

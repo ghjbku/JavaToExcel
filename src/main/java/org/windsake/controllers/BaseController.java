@@ -12,6 +12,7 @@ import org.windsake.DataManipulation.DataManipulation;
 import org.windsake.DataManipulation.InitializeData;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -24,21 +25,29 @@ public class BaseController {
     ArrayList<Object[]> bookData = new ArrayList<>();
 
     @FXML
-    Pane version_pane;
+    Pane versionPane;
+    @FXML
+    Pane dataPane;
     @FXML
     ChoiceBox<String> langSelector;
     @FXML
     ChoiceBox<String> sheetNamePicker;
-
-    //Labels
     @FXML
-    Label errorMsg;
+    TextField plateField;
+
+    @FXML
+    Label errorMsg2;
     @FXML
     Label versionLabel;
     @FXML
     Label languageLabel;
     @FXML
     Label sheetNameLabel;
+    @FXML
+    Label countLabel;
+    @FXML
+    Label plateNameLabel;
+
 
     //buttons
     @FXML
@@ -77,24 +86,34 @@ public class BaseController {
     }
 
     @FXML
-    public void run(){
-        if (sheetNamePicker.getItems().isEmpty()) {
-            errorMsg.setVisible(true);
+    public void run() {
+        if (plateField.getText().isEmpty()) {
+            errorMsg2.setVisible(true);
             return;
         }
-        errorMsg.setVisible(false);
+        errorMsg2.setVisible(false);
         assert sheet != null;
 
-        ArrayList<Object[]> initDatas = InitializeData.initData(9, sheet);
+        //ArrayList<Object[]> initDatas = InitializeData.initData(9, sheet);
+        //bookData.addAll(initDatas);
 
-        bookData.addAll(initDatas);
-        DataManipulation.insertData(sheet, bookData);
+        Object[] createdPlate = DataManipulation.createPlate(plateField.getText(),sheet);
+        bookData.add(createdPlate);
+
+        DataManipulation.insertAllData(sheet, bookData);
         workbook.setForceFormulaRecalculation(true);
         DataManipulation.writeToFile(workbook, excelPath);
     }
 
     @FXML
     public void exit_button_processing() {
+        try {
+            if (workbook != null) {
+                workbook.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         System.exit(0);
     }
@@ -125,16 +144,12 @@ public class BaseController {
 
     @FXML
     public void on_hover_version_num() {
-        version_pane.setVisible(true);
+        versionPane.setVisible(true);
     }
 
     @FXML
     public void on_exit_version_num() {
-        version_pane.setVisible(false);
-    }
-
-    public static Scene getScene() {
-        return thescene;
+        versionPane.setVisible(false);
     }
 
     private void onCboxChoice(String lang) {
@@ -154,9 +169,12 @@ public class BaseController {
         sheetNameLabel.setText("Lap neve*");
         languageLabel.setText("Nyelv választás");
         runButton.setText("Program futtatása");
-        errorMsg.setText("A lapnév hiányzik, nyiss meg egy excel fájlt!");
+        errorMsg2.setText("a rendszám mező üres!");
         String dummyVersion = versionLabel.getText();
         versionLabel.setText(dummyVersion.replace("Version", "Verzió szám"));
+        countLabel.setText((countLabel.getText()).replace("count", "gyakoriság"));
+        plateNameLabel.setText("Rendszám");
+        plateField.setPromptText("A2-es cella");
 
         openFileButton.setText("excel fájl megnyitása");
         exitButton.setText("Kilépés");
@@ -166,17 +184,21 @@ public class BaseController {
         sheetNameLabel.setText("Sheet Name*");
         languageLabel.setText("Language");
         runButton.setText("Run the program");
-        errorMsg.setText("sheet name is missing, open an excel file!");
+        errorMsg2.setText("Plate Name is missing, nothing to insert!");
         String dummyVersion = versionLabel.getText();
         versionLabel.setText(dummyVersion.replace("Verzió szám", "Version"));
+        countLabel.setText((countLabel.getText()).replace("gyakoriság", "count"));
+        plateNameLabel.setText("Plate Name");
+        plateField.setPromptText("A2 cell");
+
 
         openFileButton.setText("Open excel file");
         exitButton.setText("Exit");
     }
 
-    private void initSheetPicker(XSSFWorkbook workbook){
-        int numOfSheets=workbook.getNumberOfSheets();
-        for (int i=0;i<numOfSheets;i++){
+    private void initSheetPicker(XSSFWorkbook workbook) {
+        int numOfSheets = workbook.getNumberOfSheets();
+        for (int i = 0; i < numOfSheets; i++) {
             sheetNamePicker.getItems().add(workbook.getSheetName(i));
         }
         sheetNamePicker.setValue(workbook.getSheetName(0));
@@ -184,9 +206,9 @@ public class BaseController {
 
     private void dataManipulation() {
         excelPath = excelFile.getPath();
-        workbook = DataManipulation.initData(excelPath);
+        workbook = DataManipulation.initWorkbook(excelPath);
         initSheetPicker(workbook);
         sheet = workbook.getSheet(sheetNamePicker.getValue());
-
+        dataPane.setVisible(true);
     }
 }
